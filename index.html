@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>🚀 Dashboard Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00f9ff;
+      text-shadow: 0 0 15px #00f9ff, 0 0 30px #00f9ff;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 0 25px rgba(0,255,255,0.2);
+      backdrop-filter: blur(12px);
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    input {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      outline: none;
+    }
+    button {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 12px #00c6ff;
+    }
+    button:hover {
+      opacity: 0.85;
+      box-shadow: 0 0 20px #00c6ff, 0 0 40px #0072ff;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌐 Dashboard Checker</h1>
+
+  <!-- IP Checker -->
+  <div class="card">
+    <h3>🌍 Track IP</h3>
+    <input type="text" id="ip-input" placeholder="Masukkan IP">
+    <button onclick="cekIP()">Track IP</button>
+    <pre id="ip-result"></pre>
+    <div id="ip-map"></div>
+  </div>
+
+  <!-- Website Checker -->
+  <div class="card">
+    <h3>🔎 Cek Website</h3>
+    <input type="text" id="web-input" placeholder="contoh: google.com">
+    <button onclick="cekWebsite()">Cek Website</button>
+    <pre id="web-result"></pre>
+    <div id="web-map"></div>
+  </div>
+
+  <script>
+    // ✅ Cek IP + Maps
+    async function cekIP() {
+      const ip = document.getElementById("ip-input").value.trim();
+      let url = ip ? `https://ipapi.co/${ip}/json/` : "https://ipapi.co/json/";
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.error) {
+          document.getElementById("ip-result").textContent = "⚠️ " + data.reason;
+          document.getElementById("ip-map").innerHTML = "";
+          return;
+        }
+
+        document.getElementById("ip-result").textContent =
+`IP: ${data.ip}
+Negara: ${data.country_name}
+Kota: ${data.city}
+Region: ${data.region}
+Kode Pos: ${data.postal}
+ISP: ${data.org}
+Koordinat: ${data.latitude}, ${data.longitude}`;
+
+        document.getElementById("ip-map").innerHTML =
+          `<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
+      } catch (e) {
+        document.getElementById("ip-result").textContent = "❌ Error: " + e;
+        document.getElementById("ip-map").innerHTML = "";
+      }
+    }
+
+    // ✅ Cek Website → resolve IP + info lokasi
+    async function cekWebsite() {
+      const site = document.getElementById("web-input").value.trim();
+      if (!site) return;
+
+      try {
+        // ambil IP host pakai API bebas
+        const res = await fetch(`https://dns.google/resolve?name=${site}`);
+        const dnsData = await res.json();
+
+        if (!dnsData.Answer) {
+          document.getElementById("web-result").textContent = "❌ Tidak bisa resolve DNS.";
+          return;
+        }
+
+        const ip = dnsData.Answer.find(a => a.type === 1)?.data;
+        if (!ip) {
+          document.getElementById("web-result").textContent = "❌ Tidak ketemu IP website.";
+          return;
+        }
+
+        // ambil lokasi IP host
+        const ipInfo = await fetch(`https://ipapi.co/${ip}/json/`);
+        const data = await ipInfo.json();
+
+        document.getElementById("web-result").textContent =
+`Website: ${site}
+IP: ${ip}
+Negara: ${data.country_name}
+Kota: ${data.city}
+ISP: ${data.org}
+Koordinat: ${data.latitude}, ${data.longitude}`;
+
+        document.getElementById("web-map").innerHTML =
+          `<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
+      } catch (e) {
+        document.getElementById("web-result").textContent = "❌ Error: " + e;
+        document.getElementById("web-map").innerHTML = "";
+      }
+    }
+  </script>
+</body>
+</html>
