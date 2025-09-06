@@ -70,7 +70,6 @@
 <body>
   <h1>🌐 Dashboard Checker</h1>
 
-  <!-- IP Checker -->
   <div class="card">
     <h3>🌍 Track IP</h3>
     <input type="text" id="ip-input" placeholder="Masukkan IP">
@@ -79,7 +78,6 @@
     <div id="ip-map"></div>
   </div>
 
-  <!-- Website Checker -->
   <div class="card">
     <h3>🔎 Cek Website</h3>
     <input type="text" id="web-input" placeholder="contoh: google.com">
@@ -89,7 +87,6 @@
   </div>
 
   <script>
-    // ✅ Cek IP + Maps
     async function cekIP() {
       const ip = document.getElementById("ip-input").value.trim();
       let url = ip ? `https://ipapi.co/${ip}/json/` : "https://ipapi.co/json/";
@@ -121,13 +118,11 @@ Koordinat: ${data.latitude}, ${data.longitude}`;
       }
     }
 
-    // ✅ Cek Website → resolve IP + info lokasi
     async function cekWebsite() {
       const site = document.getElementById("web-input").value.trim();
       if (!site) return;
 
       try {
-        // ambil IP host pakai API bebas
         const res = await fetch(`https://dns.google/resolve?name=${site}`);
         const dnsData = await res.json();
 
@@ -142,7 +137,6 @@ Koordinat: ${data.latitude}, ${data.longitude}`;
           return;
         }
 
-        // ambil lokasi IP host
         const ipInfo = await fetch(`https://ipapi.co/${ip}/json/`);
         const data = await ipInfo.json();
 
