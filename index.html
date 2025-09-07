@@ -98,7 +98,7 @@ iframe {width:100%; height:250px; border:none; border-radius:12px; margin-top:10
 
 <script>
 let adminLoggedIn = false;
-const ADMIN_PASSWORD = "5437291"; // ganti dengan password adminmu
+const ADMIN_PASSWORD = "123456"; // ganti dengan password adminmu
 
 // Sidebar toggle
 function toggleSidebar() {
@@ -194,46 +194,32 @@ function lacakNIK() {
     document.getElementById("nik-result").textContent="❌ Hanya admin yang bisa mengakses fitur ini.";
     return;
   }
-  
+
   const nik = document.getElementById("nik-input").value.trim();
   if(nik.length!==16){
     document.getElementById("nik-result").textContent="⚠️ NIK harus 16 digit.";
     return;
   }
 
-  // Parsing NIK dummy
-  const day = parseInt(nik.slice(6,8));
+  // Tanggal lahir dan jenis kelamin
+  let day = parseInt(nik.slice(6,8));
   const month = parseInt(nik.slice(8,10));
   const year = parseInt(nik.slice(10,12));
-  const gender = day>40 ? "PEREMPUAN" : "LAKI-LAKI";
-  const birthDay = day>40 ? day-40 : day;
-  const birthYear = 1900 + year; // asumsi NIK untuk 1900-an
+
+  const gender = day > 40 ? "PEREMPUAN" : "LAKI-LAKI";
+  day = day > 40 ? day - 40 : day;
+
+  // Tentukan tahun lahir (1900-an atau 2000-an)
+  const birthYear = year >= 0 && year <= 25 ? 2000 + year : 1900 + year;
+
   const today = new Date();
-  const age = today.getFullYear() - birthYear - ((today.getMonth()+1 < month || (today.getMonth()+1===month && today.getDate()<birthDay)) ? 1 : 0);
+  const age = today.getFullYear() - birthYear - ((today.getMonth()+1 < month || (today.getMonth()+1 === month && today.getDate() < day)) ? 1 : 0);
 
-  // Dummy coordinates (misal berdasarkan kode kecamatan)
-  const kecCode = nik.slice(0,6);
-  const lat = -6 + Math.random();  // random lat antara -6 dan -5
-  const lng = 106 + Math.random(); // random lng antara 106 dan 107
-
-  document.getElementById("nik-result").innerHTML =
+  document.getElementById("nik-result").textContent =
 `NIK: ${nik}
 Kelamin: ${gender}
-Tanggal Lahir: ${String(birthDay).padStart(2,"0")}-${String(month).padStart(2,"0")}-${birthYear}
-Umur: ${age} tahun
-Kode Kecamatan: ${kecCode}`;
-
-  // Tambahkan Google Maps
-  const mapDiv = document.getElementById("nik-map");
-  if(!mapDiv){
-    const div = document.createElement("div");
-    div.id = "nik-map";
-    div.style.marginTop = "10px";
-    div.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&z=10&output=embed"></iframe>`;
-    document.getElementById("page-nik").appendChild(div);
-  } else {
-    mapDiv.innerHTML = `<iframe src="https://maps.google.com/maps?q=${lat},${lng}&z=10&output=embed"></iframe>`;
-  }
+Tanggal Lahir: ${String(day).padStart(2,"0")}-${String(month).padStart(2,"0")}-${birthYear}
+Umur: ${age} tahun`;
 }
 
 function acakNIK() {
@@ -272,212 +258,4 @@ async function askGemini() {
 }
 </script>
 </body>
-</html></div>
-
-<!-- Header -->
-<div class="header">
-  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-  <h1>🌐 Dashboard Checker Admin</h1>
-</div>
-
-<!-- Content -->
-<div id="content" class="content">
-  <!-- Admin Login -->
-  <div id="page-admin" class="card active">
-    <h3>🔒 Admin Login</h3>
-    <input type="password" id="admin-pass" placeholder="Masukkan password admin">
-    <button onclick="loginAdmin()">Login</button>
-    <pre id="admin-result"></pre>
-  </div>
-
-  <!-- Track IP -->
-  <div id="page-ip" class="card hidden">
-    <h3>🌍 Track IP</h3>
-    <input type="text" id="ip-input" placeholder="Masukkan IP">
-    <button onclick="cekIP()">Track IP</button>
-    <pre id="ip-result"></pre>
-    <div id="ip-map"></div>
-  </div>
-
-  <!-- Cek Website -->
-  <div id="page-web" class="card hidden">
-    <h3>🔎 Cek Website</h3>
-    <input type="text" id="web-input" placeholder="contoh: google.com">
-    <button onclick="cekWebsite()">Cek Website</button>
-    <pre id="web-result"></pre>
-    <div id="web-map"></div>
-  </div>
-
-  <!-- Cek Password -->
-  <div id="page-pass" class="card hidden">
-    <h3>🔑 Cek Password Bocor</h3>
-    <input type="password" id="pass-input" placeholder="Masukkan password">
-    <button onclick="cekPassword()">Cek Password</button>
-    <pre id="pass-result"></pre>
-  </div>
-
-  <!-- NIK Tools -->
-  <div id="page-nik" class="card hidden">
-    <h3>🆔 NIK Tools (Admin Only)</h3>
-    <input type="text" id="nik-input" placeholder="Masukkan NIK 16 digit">
-    <button onclick="lacakNIK()">Lacak NIK</button>
-    <button onclick="acakNIK()">Acak NIK</button>
-    <pre id="nik-result"></pre>
-  </div>
-
-  <!-- Gemini AI -->
-  <div id="page-gemini" class="card hidden">
-    <h3>🤖 Gemini AI</h3>
-    <textarea id="gemini-input" rows="4" placeholder="Tanyakan sesuatu..."></textarea>
-    <button onclick="askGemini()">Kirim</button>
-    <pre id="gemini-result"></pre>
-  </div>
-</div>
-
-<script>
-let adminLoggedIn = false;
-const ADMIN_PASSWORD = "123456"; // ganti dengan password adminmu
-
-// Sidebar toggle
-function toggleSidebar() {
-  const sb = document.getElementById("sidebar");
-  const content = document.getElementById("content");
-  if(sb.style.left === "0px"){ sb.style.left="-220px"; content.classList.remove("shift"); }
-  else { sb.style.left="0px"; content.classList.add("shift"); }
-}
-function showPage(page) {
-  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
-  document.getElementById("page-"+page).classList.remove("hidden");
-  toggleSidebar();
-}
-
-// ================== Admin Login ==================
-function loginAdmin() {
-  const pw = document.getElementById("admin-pass").value;
-  if(pw===ADMIN_PASSWORD){ adminLoggedIn=true; document.getElementById("admin-result").textContent="✅ Berhasil login sebagai admin!"; }
-  else { document.getElementById("admin-result").textContent="❌ Password salah!"; }
-}
-
-// ================== Track IP ==================
-async function cekIP() {
-  const ip = document.getElementById("ip-input").value.trim();
-  let url = ip ? `https://ipapi.co/${ip}/json/` : "https://ipapi.co/json/";
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    if(data.error){ document.getElementById("ip-result").textContent="⚠️ "+data.reason; document.getElementById("ip-map").innerHTML=""; return; }
-    document.getElementById("ip-result").textContent =
-`IP: ${data.ip}
-Negara: ${data.country_name}
-Kota: ${data.city}
-Region: ${data.region}
-Kode Pos: ${data.postal}
-ISP: ${data.org}
-Koordinat: ${data.latitude}, ${data.longitude}`;
-    document.getElementById("ip-map").innerHTML =
-`<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
-  } catch(e){ document.getElementById("ip-result").textContent="❌ Error: "+e; document.getElementById("ip-map").innerHTML=""; }
-}
-
-// ================== Cek Website ==================
-async function cekWebsite() {
-  const site = document.getElementById("web-input").value.trim();
-  if(!site) return;
-  try {
-    const res = await fetch(`https://dns.google/resolve?name=${site}`);
-    const dnsData = await res.json();
-    if(!dnsData.Answer){ document.getElementById("web-result").textContent="❌ Tidak bisa resolve DNS."; return; }
-    const ip = dnsData.Answer.find(a=>a.type===1)?.data;
-    if(!ip){ document.getElementById("web-result").textContent="❌ Tidak ketemu IP website."; return; }
-    const ipInfo = await fetch(`https://ipapi.co/${ip}/json/`);
-    const data = await ipInfo.json();
-    document.getElementById("web-result").textContent =
-`Website: ${site}
-IP: ${ip}
-Negara: ${data.country_name}
-Kota: ${data.city}
-ISP: ${data.org}
-Koordinat: ${data.latitude}, ${data.longitude}`;
-    document.getElementById("web-map").innerHTML =
-`<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
-  } catch(e){ document.getElementById("web-result").textContent="❌ Error: "+e; document.getElementById("web-map").innerHTML=""; }
-}
-
-// ================== Cek Password Bocor ==================
-async function cekPassword() {
-  const password = document.getElementById("pass-input").value;
-  if(!password) return;
-  const sha1 = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(password));
-  const hash = Array.from(new Uint8Array(sha1)).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase();
-  const prefix = hash.slice(0,5);
-  const suffix = hash.slice(5);
-  try {
-    const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-    const text = await res.text();
-    const found = text.split("\n").find(line=>line.split(":")[0]===suffix);
-    if(found){
-      const count = found.split(":")[1];
-      document.getElementById("pass-result").textContent = `⚠️ Password ini pernah bocor! Jumlah kemunculan: ${count}`;
-    } else {
-      document.getElementById("pass-result").textContent = "✅ Password aman, tidak ditemukan.";
-    }
-  } catch(e){
-    document.getElementById("pass-result").textContent = "❌ Error: "+e;
-  }
-}
-
-// ================== NIK Tools ==================
-function lacakNIK() {
-  if(!adminLoggedIn){ document.getElementById("nik-result").textContent="❌ Hanya admin yang bisa mengakses fitur ini."; return; }
-  const nik = document.getElementById("nik-input").value.trim();
-  if(nik.length!==16){ document.getElementById("nik-result").textContent="⚠️ NIK harus 16 digit."; return; }
-
-  // Dummy parse NIK
-  const day = parseInt(nik.slice(6,8));
-  const month = nik.slice(8,10);
-  const year = nik.slice(10,12);
-  const gender = day>40 ? "PEREMPUAN" : "LAKI-LAKI";
-  const birthDay = day>40 ? day-40 : day;
-  document.getElementById("nik-result").textContent =
-`NIK: ${nik}
-Kelamin: ${gender}
-Tanggal Lahir: ${String(birthDay).padStart(2,"0")}-${month}-19${year}`;
-}
-
-function acakNIK() {
-  if(!adminLoggedIn){ document.getElementById("nik-result").textContent="❌ Hanya admin yang bisa mengakses fitur ini."; return; }
-  const day = Math.floor(Math.random()*28)+1;
-  const month = Math.floor(Math.random()*12)+1;
-  const year = Math.floor(Math.random()*50)+50;
-  const gender = Math.random()<0.5 ? "LAKI-LAKI":"PEREMPUAN";
-  const realDay = gender==="PEREMPUAN"?day+40:day;
-  const randomKec = String(Math.floor(Math.random()*999999)).padStart(6,"0");
-  const randomSuffix = String(Math.floor(Math.random()*9999)).padStart(4,"0");
-  const nik = `${randomKec}${String(realDay).padStart(2,"0")}${String(month).padStart(2,"0")}${String(year)}${randomSuffix}`;
-  document.getElementById("nik-result").textContent =
-`🎲 NIK Acak: ${nik}
-Kelamin: ${gender}`;
-}
-
-// ================== Gemini AI ==================
-async function askGemini() {
-  const text = document.getElementById("gemini-input").value;
-  if(!text) return;
-  const API_KEY = "AIzaSyCIJmbv_D29pRTTxVJK3AMGptCLPvfg9u4";
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-  try {
-    const res = await fetch(url, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({contents:[{parts:[{text:text}]}]})
-    });
-    const data = await res.json();
-    document.getElementById("gemini-result").textContent =
-      data.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Tidak ada jawaban.";
-  } catch(e){
-    document.getElementById("gemini-result").textContent="❌ Error: "+e;
-  }
-}
-</script>
-</body>
-</html>
+  </html>
