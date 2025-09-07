@@ -1,209 +1,134 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>🚀 Dashboard Checker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      margin: 0;
-      display: flex;
-    }
-    /* Sidebar */
-    .sidebar {
-      width: 220px;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      height: 100vh;
-      position: fixed;
-      top: 0; left: -220px;
-      transition: 0.3s;
-      padding-top: 60px;
-      z-index: 1000;
-    }
-    .sidebar a {
-      display: block;
-      padding: 14px 20px;
-      color: #00f9ff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .sidebar a:hover {
-      background: rgba(0,249,255,0.2);
-    }
-    /* Header */
-    .header {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      z-index: 1100;
-    }
-    .menu-btn {
-      font-size: 24px;
-      cursor: pointer;
-      margin-right: 15px;
-    }
-    h1 {
-      margin: 0;
-      color: #00f9ff;
-      text-shadow: 0 0 15px #00f9ff;
-    }
-    /* Content */
-    .content {
-      margin-left: 0;
-      padding: 90px 20px 20px 20px;
-      width: 100%;
-      transition: margin-left 0.3s;
-      position: relative;
-      z-index: 1;
-    }
-    .content.shift {
-      margin-left: 220px;
-    }
-    .card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 600px;
-      box-shadow: 0 0 25px rgba(0,255,255,0.2);
-      backdrop-filter: blur(12px);
-    }
-    input, button, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-    input, textarea {
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      outline: none;
-    }
-    button {
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 0 12px #00c6ff;
-    }
-    button:hover {
-      opacity: 0.85;
-      box-shadow: 0 0 20px #00c6ff, 0 0 40px #0072ff;
-    }
-    pre {
-      white-space: pre-wrap;
-      background: rgba(0,0,0,0.4);
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-    iframe {
-      width: 100%;
-      height: 250px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 10px;
-    }
-    .active { display: block; }
-    .hidden { display: none; }
-  </style>
+<meta charset="UTF-8">
+<title>🌐 Dashboard Checker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {font-family:"Poppins",sans-serif; background:radial-gradient(circle at top left,#0f2027,#203a43,#2c5364); color:#fff; margin:0; display:flex;}
+.sidebar {width:220px; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); height:100vh; position:fixed; top:0; left:-220px; transition:0.3s; padding-top:60px; z-index:1000;}
+.sidebar a {display:block; padding:14px 20px; color:#00f9ff; text-decoration:none; font-weight:bold;}
+.sidebar a:hover {background:rgba(0,249,255,0.2);}
+.header {position:fixed; top:0; left:0; width:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; padding:15px; box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:1100;}
+.menu-btn {font-size:24px; cursor:pointer; margin-right:15px;}
+h1 {margin:0; color:#00f9ff; text-shadow:0 0 15px #00f9ff;}
+.content {margin-left:0; padding:90px 20px 20px 20px; width:100%; transition:margin-left 0.3s; position:relative; z-index:1;}
+.content.shift {margin-left:220px;}
+.card {background:rgba(255,255,255,0.05); border-radius:15px; padding:20px; margin:20px auto; max-width:600px; box-shadow:0 0 25px rgba(0,255,255,0.2); backdrop-filter:blur(12px);}
+input, button, textarea {width:100%; padding:12px; margin:8px 0; border:none; border-radius:8px; font-size:15px;}
+input, textarea {background:rgba(255,255,255,0.15); color:#fff; outline:none;}
+button {background:linear-gradient(135deg,#00c6ff,#0072ff); color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; box-shadow:0 0 12px #00c6ff;}
+button:hover {opacity:0.85; box-shadow:0 0 20px #00c6ff,0 0 40px #0072ff;}
+pre {white-space:pre-wrap; background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-size:14px;}
+iframe {width:100%; height:250px; border:none; border-radius:12px; margin-top:10px;}
+.active {display:block;}
+.hidden {display:none;}
+</style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div id="sidebar" class="sidebar">
-    <a href="#" onclick="showPage('ip')">🌍 Track IP</a>
-    <a href="#" onclick="showPage('web')">🔎 Cek Website</a>
-    <a href="#" onclick="showPage('pass')">🔑 Cek Password Bocor</a>
-    <a href="#" onclick="showPage('gemini')">🤖 Gemini AI</a>
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <a href="#" onclick="showPage('admin')">🔒 Admin</a>
+  <a href="#" onclick="showPage('ip')">🌍 Track IP</a>
+  <a href="#" onclick="showPage('web')">🔎 Cek Website</a>
+  <a href="#" onclick="showPage('pass')">🔑 Cek Password Bocor</a>
+  <a href="#" onclick="showPage('nik')">🆔 NIK Tools</a>
+  <a href="#" onclick="showPage('gemini')">🤖 Gemini AI</a>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+  <h1>🌐 Dashboard Checker Admin</h1>
+</div>
+
+<!-- Content -->
+<div id="content" class="content">
+  <!-- Admin Login -->
+  <div id="page-admin" class="card active">
+    <h3>🔒 Admin Login</h3>
+    <input type="password" id="admin-pass" placeholder="Masukkan password admin">
+    <button onclick="loginAdmin()">Login</button>
+    <pre id="admin-result"></pre>
   </div>
 
-  <!-- Header -->
-  <div class="header">
-    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-    <h1>🌐 Dashboard Checker</h1>
+  <!-- Track IP -->
+  <div id="page-ip" class="card hidden">
+    <h3>🌍 Track IP</h3>
+    <input type="text" id="ip-input" placeholder="Masukkan IP">
+    <button onclick="cekIP()">Track IP</button>
+    <pre id="ip-result"></pre>
+    <div id="ip-map"></div>
   </div>
 
-  <!-- Content -->
-  <div id="content" class="content">
-    <!-- Track IP -->
-    <div id="page-ip" class="card active">
-      <h3>🌍 Track IP</h3>
-      <input type="text" id="ip-input" placeholder="Masukkan IP">
-      <button onclick="cekIP()">Track IP</button>
-      <pre id="ip-result"></pre>
-      <div id="ip-map"></div>
-    </div>
-
-    <!-- Cek Website -->
-    <div id="page-web" class="card hidden">
-      <h3>🔎 Cek Website</h3>
-      <input type="text" id="web-input" placeholder="contoh: google.com">
-      <button onclick="cekWebsite()">Cek Website</button>
-      <pre id="web-result"></pre>
-      <div id="web-map"></div>
-    </div>
-
-    <!-- Cek Password -->
-    <div id="page-pass" class="card hidden">
-      <h3>🔑 Cek Password Bocor</h3>
-      <input type="password" id="pass-input" placeholder="Masukkan password">
-      <button onclick="cekPassword()">Cek Password</button>
-      <pre id="pass-result"></pre>
-    </div>
-
-    <!-- Gemini AI -->
-    <div id="page-gemini" class="card hidden">
-      <h3>🤖 Gemini AI</h3>
-      <textarea id="gemini-input" rows="4" placeholder="Tanyakan sesuatu..."></textarea>
-      <button onclick="askGemini()">Kirim</button>
-      <pre id="gemini-result"></pre>
-    </div>
+  <!-- Cek Website -->
+  <div id="page-web" class="card hidden">
+    <h3>🔎 Cek Website</h3>
+    <input type="text" id="web-input" placeholder="contoh: google.com">
+    <button onclick="cekWebsite()">Cek Website</button>
+    <pre id="web-result"></pre>
+    <div id="web-map"></div>
   </div>
 
-  <script>
-    // Sidebar toggle
-    function toggleSidebar() {
-      const sb = document.getElementById("sidebar");
-      const content = document.getElementById("content");
-      if (sb.style.left === "0px") {
-        sb.style.left = "-220px";
-        content.classList.remove("shift");
-      } else {
-        sb.style.left = "0px";
-        content.classList.add("shift");
-      }
-    }
-    function showPage(page) {
-      document.querySelectorAll(".card").forEach(c => c.classList.add("hidden"));
-      document.getElementById("page-" + page).classList.remove("hidden");
-      toggleSidebar();
-    }
+  <!-- Cek Password -->
+  <div id="page-pass" class="card hidden">
+    <h3>🔑 Cek Password Bocor</h3>
+    <input type="password" id="pass-input" placeholder="Masukkan password">
+    <button onclick="cekPassword()">Cek Password</button>
+    <pre id="pass-result"></pre>
+  </div>
 
-    // Track IP
-    async function cekIP() {
-      const ip = document.getElementById("ip-input").value.trim();
-      let url = ip ? `https://ipapi.co/${ip}/json/` : "https://ipapi.co/json/";
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.error) {
-          document.getElementById("ip-result").textContent = "⚠️ " + data.reason;
-          document.getElementById("ip-map").innerHTML = "";
-          return;
-        }
-        document.getElementById("ip-result").textContent =
+  <!-- NIK Tools -->
+  <div id="page-nik" class="card hidden">
+    <h3>🆔 NIK Tools (Admin Only)</h3>
+    <input type="text" id="nik-input" placeholder="Masukkan NIK 16 digit">
+    <button onclick="lacakNIK()">Lacak NIK</button>
+    <button onclick="acakNIK()">Acak NIK</button>
+    <pre id="nik-result"></pre>
+  </div>
+
+  <!-- Gemini AI -->
+  <div id="page-gemini" class="card hidden">
+    <h3>🤖 Gemini AI</h3>
+    <textarea id="gemini-input" rows="4" placeholder="Tanyakan sesuatu..."></textarea>
+    <button onclick="askGemini()">Kirim</button>
+    <pre id="gemini-result"></pre>
+  </div>
+</div>
+
+<script>
+let adminLoggedIn = false;
+const ADMIN_PASSWORD = "123456"; // ganti dengan password adminmu
+
+// Sidebar toggle
+function toggleSidebar() {
+  const sb = document.getElementById("sidebar");
+  const content = document.getElementById("content");
+  if(sb.style.left === "0px"){ sb.style.left="-220px"; content.classList.remove("shift"); }
+  else { sb.style.left="0px"; content.classList.add("shift"); }
+}
+function showPage(page) {
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
+  document.getElementById("page-"+page).classList.remove("hidden");
+  toggleSidebar();
+}
+
+// ================== Admin Login ==================
+function loginAdmin() {
+  const pw = document.getElementById("admin-pass").value;
+  if(pw===ADMIN_PASSWORD){ adminLoggedIn=true; document.getElementById("admin-result").textContent="✅ Berhasil login sebagai admin!"; }
+  else { document.getElementById("admin-result").textContent="❌ Password salah!"; }
+}
+
+// ================== Track IP ==================
+async function cekIP() {
+  const ip = document.getElementById("ip-input").value.trim();
+  let url = ip ? `https://ipapi.co/${ip}/json/` : "https://ipapi.co/json/";
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if(data.error){ document.getElementById("ip-result").textContent="⚠️ "+data.reason; document.getElementById("ip-map").innerHTML=""; return; }
+    document.getElementById("ip-result").textContent =
 `IP: ${data.ip}
 Negara: ${data.country_name}
 Kota: ${data.city}
@@ -211,89 +136,110 @@ Region: ${data.region}
 Kode Pos: ${data.postal}
 ISP: ${data.org}
 Koordinat: ${data.latitude}, ${data.longitude}`;
-        document.getElementById("ip-map").innerHTML =
-          `<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
-      } catch (e) {
-        document.getElementById("ip-result").textContent = "❌ Error: " + e;
-        document.getElementById("ip-map").innerHTML = "";
-      }
-    }
+    document.getElementById("ip-map").innerHTML =
+`<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
+  } catch(e){ document.getElementById("ip-result").textContent="❌ Error: "+e; document.getElementById("ip-map").innerHTML=""; }
+}
 
-    // Cek Website
-    async function cekWebsite() {
-      const site = document.getElementById("web-input").value.trim();
-      if (!site) return;
-      try {
-        const res = await fetch(`https://dns.google/resolve?name=${site}`);
-        const dnsData = await res.json();
-        if (!dnsData.Answer) {
-          document.getElementById("web-result").textContent = "❌ Tidak bisa resolve DNS.";
-          return;
-        }
-        const ip = dnsData.Answer.find(a => a.type === 1)?.data;
-        if (!ip) {
-          document.getElementById("web-result").textContent = "❌ Tidak ketemu IP website.";
-          return;
-        }
-        const ipInfo = await fetch(`https://ipapi.co/${ip}/json/`);
-        const data = await ipInfo.json();
-        document.getElementById("web-result").textContent =
+// ================== Cek Website ==================
+async function cekWebsite() {
+  const site = document.getElementById("web-input").value.trim();
+  if(!site) return;
+  try {
+    const res = await fetch(`https://dns.google/resolve?name=${site}`);
+    const dnsData = await res.json();
+    if(!dnsData.Answer){ document.getElementById("web-result").textContent="❌ Tidak bisa resolve DNS."; return; }
+    const ip = dnsData.Answer.find(a=>a.type===1)?.data;
+    if(!ip){ document.getElementById("web-result").textContent="❌ Tidak ketemu IP website."; return; }
+    const ipInfo = await fetch(`https://ipapi.co/${ip}/json/`);
+    const data = await ipInfo.json();
+    document.getElementById("web-result").textContent =
 `Website: ${site}
 IP: ${ip}
 Negara: ${data.country_name}
 Kota: ${data.city}
 ISP: ${data.org}
 Koordinat: ${data.latitude}, ${data.longitude}`;
-        document.getElementById("web-map").innerHTML =
-          `<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
-      } catch (e) {
-        document.getElementById("web-result").textContent = "❌ Error: " + e;
-        document.getElementById("web-map").innerHTML = "";
-      }
-    }
+    document.getElementById("web-map").innerHTML =
+`<iframe src="https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=10&output=embed"></iframe>`;
+  } catch(e){ document.getElementById("web-result").textContent="❌ Error: "+e; document.getElementById("web-map").innerHTML=""; }
+}
 
-    // Cek Password Bocor
-    async function cekPassword() {
-      const password = document.getElementById("pass-input").value;
-      if (!password) return;
-      const sha1 = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(password));
-      const hash = Array.from(new Uint8Array(sha1)).map(b => b.toString(16).padStart(2,"0")).join("").toUpperCase();
-      const prefix = hash.slice(0,5);
-      const suffix = hash.slice(5);
-      try {
-        const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-        const text = await res.text();
-        const found = text.split("\n").find(line => line.split(":")[0] === suffix);
-        if (found) {
-          const count = found.split(":")[1];
-          document.getElementById("pass-result").textContent = `⚠️ Password ini pernah bocor! Jumlah kemunculan: ${count}`;
-        } else {
-          document.getElementById("pass-result").textContent = "✅ Password aman, tidak ditemukan.";
-        }
-      } catch (e) {
-        document.getElementById("pass-result").textContent = "❌ Error: " + e;
-      }
+// ================== Cek Password Bocor ==================
+async function cekPassword() {
+  const password = document.getElementById("pass-input").value;
+  if(!password) return;
+  const sha1 = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(password));
+  const hash = Array.from(new Uint8Array(sha1)).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase();
+  const prefix = hash.slice(0,5);
+  const suffix = hash.slice(5);
+  try {
+    const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+    const text = await res.text();
+    const found = text.split("\n").find(line=>line.split(":")[0]===suffix);
+    if(found){
+      const count = found.split(":")[1];
+      document.getElementById("pass-result").textContent = `⚠️ Password ini pernah bocor! Jumlah kemunculan: ${count}`;
+    } else {
+      document.getElementById("pass-result").textContent = "✅ Password aman, tidak ditemukan.";
     }
+  } catch(e){
+    document.getElementById("pass-result").textContent = "❌ Error: "+e;
+  }
+}
 
-    // Gemini AI
-    async function askGemini() {
-      const text = document.getElementById("gemini-input").value;
-      if (!text) return;
-      const API_KEY = "AIzaSyCIJmbv_D29pRTTxVJK3AMGptCLPvfg9u4";
-      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-      try {
-        const res = await fetch(url, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({contents:[{parts:[{text:text}]}]})
-        });
-        const data = await res.json();
-        document.getElementById("gemini-result").textContent =
-          data.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Tidak ada jawaban.";
-      } catch (e) {
-        document.getElementById("gemini-result").textContent = "❌ Error: " + e;
-      }
-    }
-  </script>
+// ================== NIK Tools ==================
+function lacakNIK() {
+  if(!adminLoggedIn){ document.getElementById("nik-result").textContent="❌ Hanya admin yang bisa mengakses fitur ini."; return; }
+  const nik = document.getElementById("nik-input").value.trim();
+  if(nik.length!==16){ document.getElementById("nik-result").textContent="⚠️ NIK harus 16 digit."; return; }
+
+  // Dummy parse NIK
+  const day = parseInt(nik.slice(6,8));
+  const month = nik.slice(8,10);
+  const year = nik.slice(10,12);
+  const gender = day>40 ? "PEREMPUAN" : "LAKI-LAKI";
+  const birthDay = day>40 ? day-40 : day;
+  document.getElementById("nik-result").textContent =
+`NIK: ${nik}
+Kelamin: ${gender}
+Tanggal Lahir: ${String(birthDay).padStart(2,"0")}-${month}-19${year}`;
+}
+
+function acakNIK() {
+  if(!adminLoggedIn){ document.getElementById("nik-result").textContent="❌ Hanya admin yang bisa mengakses fitur ini."; return; }
+  const day = Math.floor(Math.random()*28)+1;
+  const month = Math.floor(Math.random()*12)+1;
+  const year = Math.floor(Math.random()*50)+50;
+  const gender = Math.random()<0.5 ? "LAKI-LAKI":"PEREMPUAN";
+  const realDay = gender==="PEREMPUAN"?day+40:day;
+  const randomKec = String(Math.floor(Math.random()*999999)).padStart(6,"0");
+  const randomSuffix = String(Math.floor(Math.random()*9999)).padStart(4,"0");
+  const nik = `${randomKec}${String(realDay).padStart(2,"0")}${String(month).padStart(2,"0")}${String(year)}${randomSuffix}`;
+  document.getElementById("nik-result").textContent =
+`🎲 NIK Acak: ${nik}
+Kelamin: ${gender}`;
+}
+
+// ================== Gemini AI ==================
+async function askGemini() {
+  const text = document.getElementById("gemini-input").value;
+  if(!text) return;
+  const API_KEY = "AIzaSyCIJmbv_D29pRTTxVJK3AMGptCLPvfg9u4";
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+  try {
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({contents:[{parts:[{text:text}]}]})
+    });
+    const data = await res.json();
+    document.getElementById("gemini-result").textContent =
+      data.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Tidak ada jawaban.";
+  } catch(e){
+    document.getElementById("gemini-result").textContent="❌ Error: "+e;
+  }
+}
+</script>
 </body>
 </html>
